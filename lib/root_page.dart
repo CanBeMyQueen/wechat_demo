@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wechat_demo/chat_page.dart';
-import 'package:wechat_demo/discover_page.dart';
-import 'package:wechat_demo/friends_page.dart';
-import 'package:wechat_demo/mine_page.dart';
+import 'package:wechat_demo/pages/chat/chat_page.dart';
+import 'package:wechat_demo/pages/discover/discover_page.dart';
+import 'package:wechat_demo/pages/Friends/friends_page.dart';
+import 'package:wechat_demo/pages/mine/mine_page.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({Key? key}) : super(key: key);
@@ -12,20 +12,22 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  int currentIndex = 2;
-  List <Widget>pages = [ChatPage(), FriendsPage(), DiscoverPage(), MinePage()];
+  int _currentIndex = 0;
+  List <Widget>_pages = [ChatPage(), FriendsPage(), DiscoverPage(), MinePage()];
+  PageController _controller = PageController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
           onTap: (index) {
             setState(() {
-              currentIndex = index;
+              _currentIndex = index;
+              _controller.jumpToPage(_currentIndex);
             });
           },
           type: BottomNavigationBarType.fixed,
           fixedColor: Colors.green,
-          currentIndex: currentIndex,
+          currentIndex: _currentIndex,
           unselectedItemColor: Colors.black54,
           selectedFontSize: 12,
           items: const [
@@ -68,7 +70,15 @@ class _RootPageState extends State<RootPage> {
                   width: 23,
                   image: AssetImage('images/tabbar_mine_hl.png'),), label: '我'),
           ]),
-      body: pages[currentIndex],
+      body: PageView(
+        controller: _controller,
+        children: _pages,
+        onPageChanged: (int index) {
+          _currentIndex = index;
+          setState(() {});
+        },
+        physics: NeverScrollableScrollPhysics(),
+      ),
     );
   }
 }

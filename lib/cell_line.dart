@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wechat_demo/const.dart';
 
 class CellLine extends StatelessWidget {
 
@@ -8,7 +9,7 @@ class CellLine extends StatelessWidget {
       child: Row(
         children: [
           Container(width: 50, color: Colors.white, height: 0.7,),
-          Container(color: Colors.black12, height: 0.7,)
+          Container(color: WechatThemeColor, height: 0.7,)
         ],
       ),
     );

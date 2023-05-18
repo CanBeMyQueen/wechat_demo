@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wechat_demo/discover_child_page.dart';
+import 'package:wechat_demo/pages/discover/discover_child_page.dart';
 
 class DiscoverCell extends StatefulWidget {
 

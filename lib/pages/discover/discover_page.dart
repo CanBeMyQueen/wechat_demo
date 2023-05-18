@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wechat_demo/discover_cell.dart';
+import 'package:wechat_demo/pages/discover/discover_cell.dart';
 
-import 'cell_line.dart';
+import '../../cell_line.dart';
+import '../../const.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({Key? key}) : super(key: key);
@@ -11,18 +12,17 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverPageState extends State<DiscoverPage> {
-  final Color _themeColor = const Color.fromRGBO(240, 240, 240, 1.0);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('发现'),
-        backgroundColor: _themeColor,
+        backgroundColor: WechatThemeColor,
         elevation: 0.0,
         centerTitle: true,
       ),
       body: Container(
-        color: _themeColor,
+        color: WechatThemeColor,
         child: ListView(
           children: [
             const DiscoverCell(title: '朋友圈', imageName: 'images/朋友圈.png'),
