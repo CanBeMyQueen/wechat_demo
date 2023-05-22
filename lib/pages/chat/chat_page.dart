@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:wechat_demo/const.dart';
-import 'package:wechat_demo/main.dart';
-import 'package:http/http.dart' as http;
+import 'package:wechat_demo/pages/chat/search_cell.dart';
+import 'package:wechat_demo/tools/http_manager.dart';
 
 import 'chat_data.dart';
 
@@ -60,19 +60,43 @@ class _ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin<
      setState(() {
        _stateStr = 'loading...';
      });
-    Uri uri = Uri.parse('http://rap2api.taobao.org/app/mock/256798/api/chat/list');
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final chatMap = json.decode(response.body);
-      List <ChatModel> chatList = chatMap['chat_list']
+    final response = await HttpManager.get('http://rap2api.taobao.org/app/mock/256798/api/chat/list');
+    if (response?.statusCode == 200) {
+      List <ChatModel> chatList = response?.data['chat_list']
           .map<ChatModel>((item) => ChatModel.fromMap(item))
           .toList();
       return chatList;
     } else {
-      throw Exception('statusCode:${response.statusCode}');
+      throw Exception('statusCode:${response?.statusCode}');
     }
 
   }
+
+  Widget? _itemBuilderForRow(BuildContext context, int index) {
+
+    if (index == 0) {
+      return  SearchBarChat(datas: _chatList,);
+    }
+    index++;
+    return ListTile(
+      title: Text(_chatList[index].name
+      ),
+      subtitle: Container(
+        height: 25,
+        alignment: Alignment.bottomCenter,
+        padding: const EdgeInsets.only(right: 10,),
+        child: Text(_chatList[index].message, overflow: TextOverflow.ellipsis,),
+      ),
+      leading: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          image: DecorationImage(image: NetworkImage(_chatList[index].imageUrl))
+        ),
+      ),
+    );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +105,7 @@ class _ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin<
       appBar: AppBar(
         backgroundColor: WechatThemeColor,
         centerTitle: true,
+        elevation: 0.0,
         title: const Text('微信'),
         actions: [
           Container(
@@ -107,26 +132,7 @@ class _ChatPageState extends State<ChatPage> with AutomaticKeepAliveClientMixin<
       body: Container(
         child: _chatList.length == 0
             ? Center(child: Text(_stateStr),)
-            : ListView.builder(itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(_chatList[index].name
-                ),
-                subtitle: Container(
-                  height: 25,
-                  alignment: Alignment.bottomCenter,
-                  padding: const EdgeInsets.only(right: 10,),
-                  child: Text(_chatList[index].message, overflow: TextOverflow.ellipsis,),
-                ),
-                leading: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0),
-                    image: DecorationImage(image: NetworkImage(_chatList[index].imageUrl))
-                  ),
-                ),
-              );
-        }, itemCount: _chatList.length,),
+            : ListView.builder(itemBuilder: _itemBuilderForRow, itemCount: _chatList.length + 1,),
       ),
     );
   }
